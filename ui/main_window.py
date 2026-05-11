@@ -4,7 +4,8 @@ from PySide6.QtWidgets import (
     QMessageBox, QSpacerItem, QSizePolicy
 )
 from PySide6.QtGui import QIcon, QPalette, QColor
-from PySide6.QtCore import Qt, QThread, Signal
+from PySide6.QtCore import Qt, QThread, Signal, QUrl
+from PySide6.QtGui import QDesktopServices
 
 from ui.widgets.scale_selector_widget import ScaleSelectorWidget
 from ui.widgets.drop_zone_widget import DropZoneWidget
@@ -206,9 +207,8 @@ class MainWindow(QMainWindow):
             }
         """)
         self.output_path_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-        self.output_path_label.setEllipsis(Qt.ElideMiddle)
         
-        browse_dir_btn = QPushButton("浏览")
+        browse_dir_btn = QPushButton("打开目录")
         browse_dir_btn.setStyleSheet("""
             QPushButton {
                 background: rgba(255, 255, 255, 0.8);
@@ -307,14 +307,7 @@ class MainWindow(QMainWindow):
         self.update_convert_button()
     
     def on_browse_dir_clicked(self):
-        dir_path = QFileDialog.getExistingDirectory(
-            self,
-            "选择输出目录",
-            self.output_dir
-        )
-        if dir_path:
-            self.output_dir = dir_path
-            self.output_path_label.setText(dir_path)
+        QDesktopServices.openUrl(QUrl.fromLocalFile(self.output_dir))
     
     def on_convert_clicked(self):
         items = self.image_list.get_items()
